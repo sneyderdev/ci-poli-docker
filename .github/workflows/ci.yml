@@ -1,0 +1,29 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Crear .env de CI
+        run: cp .env.example .env
+
+      - name: Construir imágenes
+        run: docker compose build
+
+      - name: Levantar servicios
+        run: docker compose up -d --wait
+
+      - name: Prueba de comunicación api -> db
+        run: sh scripts/smoke-test.sh
+
+      - name: Logs de los contenedores
+        if: failure()
+        run: docker compose logs
+
+      - name: Apagar servicios
+        if: always()
+        run: docker compose down -v
