@@ -20,7 +20,7 @@ export function createApp(db) {
 
   app.post('/notes', async (req, res) => {
     const { text } = req.body ?? {};
-    if (!text.trim()) {
+    if (typeof text !== 'string' || !text.trim()) {
       return res.status(400).json({ error: 'El campo "text" es obligatorio' });
     }
     const { rows } = await db.query(
