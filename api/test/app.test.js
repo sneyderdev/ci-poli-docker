@@ -67,6 +67,20 @@ test('POST /notes guarda la nota y responde 201', async (t) => {
   assert.deepEqual(db.calls[0].params, ['hola']);
 });
 
+test('POST /notes con solo espacios responde 400', async (t) => {
+  const db = fakeDb(() => ({ rows: [] }));
+  const url = await startServer(t, db);
+
+  const res = await fetch(`${url}/notes`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ text: '   ' }),
+  });
+
+  assert.equal(res.status, 400);
+  assert.equal(db.calls.length, 0);
+});
+
 test('POST /notes sin texto responde 400 y no toca la base de datos', async (t) => {
   const db = fakeDb(() => ({ rows: [] }));
   const url = await startServer(t, db);

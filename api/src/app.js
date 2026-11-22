@@ -20,12 +20,12 @@ export function createApp(db) {
 
   app.post('/notes', async (req, res) => {
     const { text } = req.body ?? {};
-    if (!text) {
+    if (!text.trim()) {
       return res.status(400).json({ error: 'El campo "text" es obligatorio' });
     }
     const { rows } = await db.query(
       'INSERT INTO notes (text) VALUES ($1) RETURNING id, text, created_at',
-      [text],
+      [text.trim()],
     );
     res.status(201).json(rows[0]);
   });
