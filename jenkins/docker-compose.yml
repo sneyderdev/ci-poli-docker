@@ -1,0 +1,19 @@
+name: jenkins
+
+services:
+  jenkins:
+    build: .
+    image: ci-poli-jenkins:2.580.2
+    container_name: jenkins
+    ports:
+      - "8080:8080"     # interfaz web
+      - "50000:50000"   # conexión de agentes
+    volumes:
+      - jenkins_home:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+    group_add:
+      - "${DOCKER_GID:-1001}"   # grupo dueño del socket de Docker: stat -c %g /var/run/docker.sock
+    restart: unless-stopped
+
+volumes:
+  jenkins_home:
