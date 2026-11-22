@@ -1,6 +1,6 @@
 FROM jenkins/jenkins:2.580.2-lts-jdk21
 
-# Cliente de Docker y plugin de Compose: Jenkins usa el Docker del host a través del socket montado
+# Cliente de Docker con Buildx y Compose: Jenkins usa el Docker del host a través del socket montado
 USER root
 RUN apt-get update \
  && apt-get install -y --no-install-recommends ca-certificates curl \
@@ -9,7 +9,7 @@ RUN apt-get update \
  && echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian $(. /etc/os-release && echo "$VERSION_CODENAME") stable" \
     > /etc/apt/sources.list.d/docker.list \
  && apt-get update \
- && apt-get install -y --no-install-recommends docker-ce-cli docker-compose-plugin \
+ && apt-get install -y --no-install-recommends docker-ce-cli docker-buildx-plugin docker-compose-plugin \
  && rm -rf /var/lib/apt/lists/*
 USER jenkins
 
